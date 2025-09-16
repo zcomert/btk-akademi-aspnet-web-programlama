@@ -14,9 +14,6 @@ public class InMemoryTodoStore : ITodoStore
         _logger = logger;
         Seed();
     }
-
-   
-
     public void Add(Todo todo)
     {
         todo.Id = todo.Id == Guid.Empty ? Guid.NewGuid() : todo.Id;
@@ -81,7 +78,7 @@ public class InMemoryTodoStore : ITodoStore
             return false;
         _items[todo.Id] = todo;
         _logger.LogInformation($"Görev güncellendi. {todo.Title} ({todo.Id})");
-        return true; 
+        return true;
     }
 
     private void Seed()
@@ -93,7 +90,7 @@ public class InMemoryTodoStore : ITodoStore
         
         var samples = new[]
         {
-            new Todo(){Title="Alışveriş yap", Description ="Süt, ekmek ,yumurta", Priority = TodoPriority.Medium, DueDate = today.AddDays(1), IsDone=false }
+            new Todo(){Title="Alışveriş yap", Description ="Süt, ekmek ,yumurta", Priority = TodoPriority.Medium, DueDate = today.AddDays(1), IsDone=false },
             new Todo { Title = "Sunum hazırla", Description = "Pazartesi toplantısı için slaytlar", Priority = TodoPriority.High, DueDate = today.AddDays(3), IsDone = false },
             new Todo { Title = "Spor", Description = "30 dk koşu", Priority = TodoPriority.Low, DueDate = today.AddDays(2), IsDone = true },
             new Todo { Title = "Araba bakımı", Description = "Yağ değişimi ve filtreler", Priority = TodoPriority.Medium, DueDate = today.AddDays(7), IsDone = false },

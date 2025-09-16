@@ -1,7 +1,14 @@
+using TodoApp.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// DI - Register
+builder
+    .Services
+    .AddSingleton<ITodoStore, InMemoryTodoStore>();
 
 var app = builder.Build();
 
