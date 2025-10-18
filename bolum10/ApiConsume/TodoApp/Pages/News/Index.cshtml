@@ -1,0 +1,31 @@
+﻿@page
+@model TodoApp.Pages.News.IndexModel
+@{
+    ViewData["Title"] = "Haberler";
+}
+
+<h1 class="mb-3">Haberler</h1>
+
+@if(!Model.Articles.Any())
+{
+    <div class="alert alert-info">Henüz haber yok!</div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var item in Model.Articles)
+        {
+            <a class="list-group-item list-group-item-action" asp-page="/News/Details" asp-route-id="@item.Id">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">@item.Title</h5>
+                    <small class="text-muted">@item.PublishedAt?.ToString("yyyy-MM-dd HH:mm")</small>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(item.Summary))
+                {
+                    <p class="mb-1">@item.Summary</p>
+                }
+                <small class="text-muted">@item.AuthorName</small>
+            </a>
+        }
+    </div>
+}
