@@ -1,0 +1,21 @@
+﻿@model Contact
+
+<h1 class="mb-3 text-danger">Silme Onayı</h1>
+<p>Bu kişiyi silmek istediğinizde emin misiniz?</p>
+
+<dl class="row">
+    <dt class="col-sm-3">Ad</dt>
+    <dd class="col-sm-9">@Model.FirstName</dd>
+
+    <dt class="col-sm-3">Soyad</dt>
+    <dd class="col-sm-9">@Model.LastName</dd>
+
+    <dt class="col-sm-3">E-posta</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
