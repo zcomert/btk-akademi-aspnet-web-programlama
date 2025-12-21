@@ -1,10 +1,13 @@
 using LibApp.Data;
+using LibApp.Models.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Options Pattern
+builder.Services.Configure<AdminUserOptions>(builder.Configuration.GetSection("AdminUser"));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -56,6 +59,24 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("AllowAll");
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope
+        .ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    context.Database.Migrate();
+
+    var adminOptions = scope
+        .ServiceProvider
+        .GetRequiredService<IOptions<AdminUserOptions>>().Value;
+
+    AdminUserSeeder.SeedAdminUserAsync(context, adminOptions)
+        .GetAwaiter()
+        .GetResult();
+}
 
 app.UseAuthorization();
 
