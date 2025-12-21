@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace LibApp.Models.Entities;
-
 public class Author
 {
     public int AuthorId { get; set; }
