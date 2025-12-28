@@ -16,6 +16,7 @@ public class Author
     [StringLength(2000)]
     public string? Biography { get; set; }
 
+    // Collection navigation property
     public ICollection<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
 }
 

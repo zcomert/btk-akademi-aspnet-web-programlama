@@ -41,7 +41,6 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
-// builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddHttpClient<IBookApiClientService, BookApiClientService>((sp, client) =>
 {

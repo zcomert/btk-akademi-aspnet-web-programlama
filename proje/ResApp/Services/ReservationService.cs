@@ -48,7 +48,11 @@ public class ReservationService : IReservationService
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ServiceResult> CreateReservationAsync(string userId, ApiBookDto book, DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
+    public async Task<ServiceResult> CreateReservationAsync(string userId, 
+        ApiBookDto book, 
+        DateTime startDate, 
+        DateTime endDate, 
+        CancellationToken cancellationToken = default)
     {
         startDate = startDate.Date;
         endDate = endDate.Date;
