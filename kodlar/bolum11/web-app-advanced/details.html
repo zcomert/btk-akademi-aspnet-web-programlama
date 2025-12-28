@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haber Detayı</title>
+    <style>
+        :root{
+            --bg: #0f172a;
+            --panel: #0b1220;
+            --muted: #94a3b8;
+            --text: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-600: #2563eb;
+            --danger: #ef4444;
+            --danger-600: #dc2626;
+            --ring: rgba(59,130,246,.5);
+            --card-border: #1e293b;
+        }
+        *{ box-sizing: border-box }
+        body{
+            margin:0; position:relative; overflow-x:hidden;
+            background: linear-gradient(135deg, #0b1220, #0f172a, #020617);
+            background-size: 200% 200%;
+            animation: bg-pan 28s ease-in-out infinite;
+            color: var(--text);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+        body::before{
+            content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+            background:
+              radial-gradient(40rem 40rem at 10% 15%, rgba(59,130,246,.08), transparent 60%),
+              radial-gradient(35rem 35rem at 90% 20%, rgba(99,102,241,.07), transparent 60%),
+              radial-gradient(45rem 45rem at 30% 85%, rgba(236,72,153,.06), transparent 60%);
+            filter: blur(10px);
+            animation: float 36s ease-in-out infinite alternate;
+        }
+        @keyframes bg-pan { 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+        @keyframes float { 0%{transform:translateY(-2%) translateX(0%)} 50%{transform:translateY(1.5%) translateX(1.5%)} 100%{transform:translateY(-1%) translateX(-1%)} }
+        @media (prefers-reduced-motion: reduce){ body{animation:none} body::before{animation:none} }
+        .container{ max-width: 900px; margin: 0 auto; padding: 2rem 1rem; position:relative; z-index:1; }
+        .page-header{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.5rem; }
+        .page-header h1{ margin:0; font-size:1.6rem; }
+        .btn{ display:inline-flex; align-items:center; gap:.5rem; border:1px solid transparent; border-radius:.6rem; padding:.6rem .9rem; font-weight:600; cursor:pointer; text-decoration:none; }
+        .btn:focus{ outline:2px solid var(--ring); outline-offset:2px; }
+        .btn-primary{ background: var(--primary); color:#fff; }
+        .btn-primary:hover{ background: var(--primary-600); }
+        .btn-danger{ background: var(--danger); color:#fff; }
+        .btn-danger:hover{ background: var(--danger-600); }
+        .btn-ghost{ background: transparent; color: var(--text); border-color: var(--card-border); border:1px solid var(--card-border); }
+        .card{ background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border:1px solid var(--card-border); border-radius:.9rem; padding:1.2rem; }
+        .meta{ color: var(--muted); margin:.25rem 0 1rem; }
+        .summary{ color:#cbd5e1; margin:.25rem 0 1rem; }
+        .content{ line-height:1.6; }
+        .content pre{ white-space:pre-wrap; }
+        .actions{ display:flex; gap:.5rem; margin-top:1rem; }
+        .empty{ color: var(--muted); }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header class="page-header">
+            <h1>Haber Detayı</h1>
+            <a class="btn btn-ghost" href="index.html">Geri Dön</a>
+        </header>
+
+        <section id="detail">
+            <div id="detail-root" class="card">
+                Yükleniyor...
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        (function(){
+            const qs = (name) => new URL(window.location.href).searchParams.get(name);
+
+            function fmtDateLocal(iso){
+                if(!iso) return "";
+                const d = new Date(iso);
+                if(Number.isNaN(d.getTime())) return "";
+                return d.toLocaleString(undefined, {year:'numeric', month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+            }
+
+            async function load(){
+                const idRaw = qs('id');
+                const id = idRaw ? parseInt(idRaw) : NaN;
+                const root = document.getElementById('detail-root');
+                if(Number.isNaN(id)){
+                    root.innerHTML = '<div class="empty">Geçersiz haber id.</div>';
+                    return;
+                }
+                try{
+                    const data = await window.NewsClient.getNewsById(id);
+                    const title = document.createElement('h2');
+                    title.textContent = data.title || '(Başlıksız)';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'meta';
+                    const statusMap = {0: 'Taslak', 1: 'Yayında'};
+                    const parts = [];
+                    if(data.authorName) parts.push(`Yazar: ${data.authorName}`);
+                    if(data.publishedAt) parts.push(`Tarih: ${fmtDateLocal(data.publishedAt)}`);
+                    if(Number.isInteger(data.status)) parts.push(`Durum: ${statusMap[data.status] ?? data.status}`);
+                    if(data.slug) parts.push(`Slug: ${data.slug}`);
+                    meta.textContent = parts.join(' · ');
+
+                    const summary = document.createElement('div');
+                    summary.className = 'summary';
+                    summary.textContent = data.summary || '';
+
+                    const content = document.createElement('div');
+                    content.className = 'content';
+                    const pre = document.createElement('pre');
+                    pre.textContent = data.content || '';
+                    content.appendChild(pre);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'actions';
+                    const edit = document.createElement('a');
+                    edit.className = 'btn btn-primary';
+                    edit.href = `update-news.html?id=${encodeURIComponent(id)}`;
+                    edit.textContent = 'Güncelle';
+                    const del = document.createElement('button');
+                    del.className = 'btn btn-danger';
+                    del.textContent = 'Sil';
+                    del.addEventListener('click', async () => {
+                        const ok = window.confirm(`"${data.title ?? 'Bu haber'}" silinsin mi?`);
+                        if(!ok) return;
+                        try{
+                            await window.NewsClient.deleteNews(id);
+                            window.location.href = 'index.html';
+                        }catch(err){
+                            console.error(err);
+                            alert(`Silme işlemi başarısız: ${err.message || err}`);
+                        }
+                    });
+                    actions.appendChild(edit);
+                    actions.appendChild(del);
+
+                    root.innerHTML = '';
+                    root.appendChild(title);
+                    root.appendChild(meta);
+                    root.appendChild(summary);
+                    root.appendChild(content);
+                    root.appendChild(actions);
+                }catch(err){
+                    console.error(err);
+                    root.innerHTML = '<div class="empty">Haber yüklenemedi.</div>';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', load);
+        })();
+    </script>
+</body>
+</html>

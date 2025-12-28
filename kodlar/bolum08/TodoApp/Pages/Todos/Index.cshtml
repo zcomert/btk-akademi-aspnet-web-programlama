@@ -1,0 +1,108 @@
+﻿@page
+@model TodoApp.Pages.Todos.IndexModel
+@{
+    ViewData["Title"] = "Görevler";
+}
+
+<h1 class="mb-3">Görevler</h1>
+
+<div class="mb-2">
+    <a class="btn btn-success" asp-page="Create">+ Yeni Görev</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end" >
+            <div class="col-12 col-md-4">
+                <label class="form-label" for="q">Ara</label>
+                <input type="text" id="q" name="q" value="@Model.Q" class="form-control" placeholder="Başlık ve açıklama arama yap" />
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label" for="priority">Öncelik</label>
+                <select id="priority" name="priority" class="form-select">
+                    <option value="">Tümü</option>
+                    @foreach(TodoPriority p in Enum.GetValues(typeof(TodoPriority)))
+                    {
+                        <option value="@p" selected="@(Model.Priority == p ? "selected" : null)" >@p</option>
+                    }
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label" for="status">Durum</label>
+                <select id="status" name="status" class="form-select">
+                    <option value="">Tümü</option>
+                    <option value="pending" selected="@(Model.Status=="pending" ? "selected":null)" >Bekliyor</option>
+                    <option value="done" selected="@(Model.Status=="done" ? "selected":null)">Tamamlandı</option>
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label" for="sort">Sıralama</label>
+                <select id="sort" name="sort" class="form-select">
+                    <option value="due_asc" selected="@(Model.Sort=="due_asc" ? "selected":null)">Tarihe Göre artan</option>
+                    <option value="due_desc" selected="@(Model.Sort=="due_desc" ? "selected":null)">Tarihe Göre azalan</option>
+                </select>
+            </div>
+            <div class="col-6 col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Uygula</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Başlık</th>
+                <th class="d-none d-md-table-cell">Açıklama</th>
+                <th>Öncelik</th>
+                <th>Bitiş Tarihi</th>
+                <th>Durum</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var t in Model.Items)
+            {
+                <tr>
+                    <td>@t.Title</td>
+                    <td class="d-none d-md-table-cell">@t.Description</td>
+                    <td>
+                        @switch(t.Priority)
+                        {
+                            case TodoPriority.Low:
+                                <span class="badge bg-secondary">Düşük</span>
+                                break;
+                            case TodoPriority.Medium:
+                                <span class="badge bg-warning text-dark">Orta</span>
+                                break;
+                            case TodoPriority.High:
+                                <span class="badge bg-danger">Yüksek</span>
+                                break;
+                        }
+                    </td>
+                    <td>@(t.DueDate?.ToString("yyyy-MM-dd") ?? "-") </td>
+                    <td>
+                        @if(t.IsDone)
+                        {
+                            <span class="text-success" >Tamamlandı</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Bekleniyor</span>
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" asp-page="Edit" asp-route-id="@t.Id">Düzenle</a>
+                        <a class="btn btn-sm btn-outline-danger" asp-page="Delete" asp-route-id="@t.Id">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if(!Model.Items.Any())
+{
+    <div class="alert alert-info">Gösterilecek görev yok!</div>
+}

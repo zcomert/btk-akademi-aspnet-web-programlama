@@ -1,0 +1,30 @@
+﻿@model Contact
+
+<h1 class="mb-3">Kişi Detayı</h1>
+<dl class="row">
+    <dt class="col-sm-3">Ad</dt>
+    <dd class="col-sm-9">@Model.FirstName</dd>
+    
+    <dt class="col-sm-3">Soyad</dt>
+    <dd class="col-sm-9">@Model.LastName</dd>
+    
+    <dt class="col-sm-3">E-posta</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+    
+    <dt class="col-sm-3">Telefon</dt>
+    <dd class="col-sm-9">@Model.Phone</dd>
+    
+    <dt class="col-sm-3">Şirket</dt>
+    <dd class="col-sm-9">@Model.Company</dd>
+    
+    <dt class="col-sm-3">Unvan</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+    
+    <dt class="col-sm-3">Notlar</dt>
+    <dd class="col-sm-9">@Model.Notes</dd>
+</dl>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</div>
+

@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Contact>
+@using Microsoft.AspNetCore.Identity
+@using ContactApp.Models.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<h1>Index (@Model.Count()) </h1>
+
+<form method="get" asp-controller="Contacts" asp-action="Index" class="row g-2 mb-3">
+    <div class="col-sm-8 col-md-6 col-lg-4">
+        <input type="text" name="q" value="@((string?)ViewBag.Query)" class="form-control" placeholder="Arama yapabilirsiniz" />
+    </div>
+
+    <div class="col-auto ms-auto">
+        @if(User.IsInRole("Admin"))
+        {
+            <a asp-controller="Contacts" asp-action="Create" class="btn btn-success">+ Yeni Kişi </a>
+        }
+    </div>
+
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Ad</th>
+                <th>Soyadı</th>
+                <th>E-posta</th>
+                <th>Telefon</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Contact c in Model)
+            {
+                <tr>
+                    <td>@c.FirstName</td>
+                    <td>@c.LastName</td>
+                    <td>@c.Email</td>
+                    <td>@c.Phone</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Contacts" asp-route-id="@c.Id">Detay</a>
+                        
+                        @if(User.IsInRole("Admin"))
+                        {
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-controller="Contacts" asp-route-id="@c.Id">Güncelle</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-controller="Contacts" asp-route-id="@c.Id">Sil</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if(!Model.Any())
+    {
+        <div class="alert alert-warning">Kayıt bulunamadı.</div>
+    }
+</div>
