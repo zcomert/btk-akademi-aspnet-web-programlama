@@ -64,9 +64,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("AllowAll");
+
 
 using (var scope = app.Services.CreateScope())
 {

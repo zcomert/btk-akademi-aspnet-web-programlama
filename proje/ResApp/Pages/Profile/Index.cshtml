@@ -1,0 +1,47 @@
+@page
+@model ResApp.Pages.Profile.IndexModel
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<h1 class="mb-4">Profil Bilgileri</h1>
+
+@if (!string.IsNullOrEmpty(Model.FeedbackMessage))
+{
+    <div class="alert @(Model.IsSuccessMessage ? "alert-success" : "alert-danger")" role="alert">
+        @Model.FeedbackMessage
+    </div>
+}
+
+<form method="post" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Input.FullName"></label>
+        <input class="form-control" asp-for="Input.FullName" />
+        <span class="text-danger" asp-validation-for="Input.FullName"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Input.Email"></label>
+        <input class="form-control" asp-for="Input.Email" />
+        <span class="text-danger" asp-validation-for="Input.Email"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Input.Phone"></label>
+        <input class="form-control" asp-for="Input.Phone" />
+        <span class="text-danger" asp-validation-for="Input.Phone"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Input.DateOfBirth"></label>
+        <input class="form-control" asp-for="Input.DateOfBirth" />
+        <span class="text-danger" asp-validation-for="Input.DateOfBirth"></span>
+    </div>
+    <div class="col-12">
+        <label class="form-label" asp-for="Input.Address"></label>
+        <textarea class="form-control" rows="3" asp-for="Input.Address"></textarea>
+        <span class="text-danger" asp-validation-for="Input.Address"></span>
+    </div>
+    <div class="col-12 text-end">
+        <button type="submit" class="btn btn-primary">Güncelle</button>
+    </div>
+</form>
+
+<partial name="_ValidationScriptsPartial" />

@@ -1,8 +1,48 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "ResApp";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="py-5 text-center">
+    <h1 class="display-4 mb-3">ResApp Kitap Rezervasyon Merkezi</h1>
+    <p class="lead text-muted mb-4">
+        LibApp kitap servisi üzerinden gelen katalog verileriyle çalışan, kullanıcı profili destekli ve rezervasyon kuralları içeren örnek bir ASP.NET Core uygulaması.
+    </p>
+    @if (!(User.Identity?.IsAuthenticated ?? false))
+    {
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">Hemen Kayıt Ol</a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg">Giriş Yap</a>
+        </div>
+    }
+    else
+    {
+        <a asp-controller="Books" asp-action="Index" class="btn btn-primary btn-lg">Kitapları İncele</a>
+    }
+</section>
+
+<section class="row text-center g-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>Kullanıcı Profili</h3>
+                <p>Razor Pages altyapısıyla profil bilgilerinizi güncelleyin, iletişim ve adres detaylarınızı yönetin.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>LibApp API Entegrasyonu</h3>
+                <p>Kitap listesi doğrudan LibApp REST API uç noktalarından çekilir ve her zaman güncel kalır.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3>Rezervasyon Kuralları</h3>
+                <p>7 güne kadar rezervasyon süresi, çakışan talepleri engelleme ve yönetici tarafından iptal desteği.</p>
+            </div>
+        </div>
+    </div>
+</section>

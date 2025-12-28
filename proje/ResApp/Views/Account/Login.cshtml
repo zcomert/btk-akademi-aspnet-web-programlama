@@ -1,0 +1,37 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<h1 class="mb-4">ResApp Oturumu</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">
+        @successMessage
+    </div>
+}
+
+<form asp-action="Login" method="post" class="row g-3">
+    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+    <div class="col-12">
+        <label class="form-label" asp-for="UserName"></label>
+        <input class="form-control" asp-for="UserName" />
+        <span class="text-danger" asp-validation-for="UserName"></span>
+    </div>
+    <div class="col-12">
+        <label class="form-label" asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
+        <span class="text-danger" asp-validation-for="Password"></span>
+    </div>
+    <div class="col-12 form-check">
+        <input class="form-check-input" asp-for="RememberMe" />
+        <label class="form-check-label" asp-for="RememberMe"></label>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+        <a asp-action="Register" class="btn btn-link">Hemen kayıt ol</a>
+    </div>
+</form>
+
+<partial name="_ValidationScriptsPartial" />

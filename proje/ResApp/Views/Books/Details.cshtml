@@ -1,0 +1,31 @@
+@model ResApp.Models.ApiBookDto
+@{
+    ViewData["Title"] = "Kitap Detayı";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-link">&larr; Kitap Listesine Dön</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        @if (!string.IsNullOrWhiteSpace(Model.CoverImageUrl))
+        {
+            <img src="@Model.CoverImageUrl" class="img-fluid rounded" alt="@Model.Title" />
+        }
+        else
+        {
+            <div class="bg-light text-center p-5 rounded">Kapak görseli bulunamadı</div>
+        }
+    </div>
+    <div class="col-md-8">
+        <h1>@Model.Title</h1>
+        <p class="lead text-muted">@Model.Author</p>
+        @if (!string.IsNullOrWhiteSpace(Model.Isbn))
+        {
+            <p><strong>ISBN:</strong> @Model.Isbn</p>
+        }
+        <p>@Model.Description</p>
+        <a asp-controller="Reservations" asp-action="Create" asp-route-bookId="@Model.Id" class="btn btn-primary">Bu Kitabı Rezerve Et</a>
+    </div>
+</div>
