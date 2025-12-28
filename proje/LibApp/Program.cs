@@ -1,5 +1,7 @@
-using LibApp.Data;
+﻿using LibApp.Data;
 using LibApp.Models.Options;
+using LibApp.Services;
+using LibApp.Services.Intrefaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -9,9 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Options Pattern
 builder.Services.Configure<AdminUserOptions>(builder.Configuration.GetSection("AdminUser"));
 
+// Veri tabanı için gerekli olan hizmetleri eklenmesi
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// BookService kaydı
+builder.Services.AddScoped<IBookService, BookService>();
+
+// Identity kaydı
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -23,7 +30,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// Cookie
+// Cookie ayarları
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -78,7 +85,10 @@ using (var scope = app.Services.CreateScope())
         .GetResult();
 }
 
+// oturum açma ve yetkilendirme ara katman yazılımlarının etkinleştirilmesi
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapStaticAssets();
 
@@ -87,5 +97,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapControllers();
 
 app.Run();

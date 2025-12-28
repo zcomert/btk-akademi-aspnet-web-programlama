@@ -1,0 +1,77 @@
+@model BookFormViewModel
+@{
+    var isEdit = Model.BookId.HasValue;
+    ViewData["Title"] = isEdit ? "Kitabı Düzenle" : "Kitap Ekle";
+    var authorOptions = Model.Authors.Select(a => new { a.AuthorId, FullName = $"{a.FirstName} {a.LastName}" });
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+    @Html.AntiForgeryToken()
+    @if (isEdit)
+    {
+        <input type="hidden" asp-for="BookId"/>
+    }
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Başlık</label>
+                <input asp-for="Title" class="form-control"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ISBN" class="form-label">ISBN</label>
+                <input asp-for="ISBN" class="form-control"/>
+                <span asp-validation-for="ISBN" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Açıklama</label>
+                <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label">Kategori</label>
+                <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "CategoryId", "Name"))" class="form-select"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PublisherId" class="form-label">Yayınevi</label>
+                <select asp-for="PublisherId" asp-items="@(new SelectList(Model.Publishers, "PublisherId", "Name"))" class="form-select"></select>
+                <span asp-validation-for="PublisherId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Yazarlar</label>
+                <select asp-for="SelectedAuthorIds"
+                        asp-items="@(new MultiSelectList(authorOptions, "AuthorId", "FullName", Model.SelectedAuthorIds))"
+                        class="form-select" multiple></select>
+                <span asp-validation-for="SelectedAuthorIds" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PublishYear" class="form-label">Yayın Yılı</label>
+                <input asp-for="PublishYear" class="form-control"/>
+                <span asp-validation-for="PublishYear" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PageCount" class="form-label">Sayfa Sayısı</label>
+                <input asp-for="PageCount" class="form-control"/>
+                <span asp-validation-for="PageCount" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CoverImageUrl" class="form-label">Kapak Görseli URL'si</label>
+                <input asp-for="CoverImageUrl" class="form-control"/>
+                <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+            </div>
+            <div class="form-check mb-3">
+                <input asp-for="IsActive" class="form-check-input"/>
+                <label asp-for="IsActive" class="form-check-label">Aktif</label>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
+
+<partial name="_ValidationScriptsPartial"/>
